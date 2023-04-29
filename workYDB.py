@@ -110,7 +110,8 @@ class Ydb:
     
     def get_last_date_modify(self, tableName: str):
         """Внимание запро стоит доваольно много для 2000 строк 2070 RU"""
-        query = f"SELECT MAX(DATE_MODIFY) FROM {tableName};"
+        #query = f"SELECT MAX(DATE_MODIFY) FROM {tableName};"
+        query = f"SELECT DATE_MODIFY FROM {tableName} ORDER BY DATE_MODIFY desc limit 1"
         print(query)
         def a(session):
             return session.transaction().execute(
@@ -119,7 +120,7 @@ class Ydb:
             )
         b = pool.retry_operation_sync(a)
         print('b',b)
-        rez = b[0].rows[0]['column0'].decode('utf-8')
+        rez = b[0].rows[0]['DATE_MODIFY'].decode('utf-8')
         print('date_modify',rez)
         return rez
 

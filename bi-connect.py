@@ -31,7 +31,7 @@ def get_user_list():
 
 def get_lead_list():
     try:
-        date = sql.get_last_date_modify('lead')[0]
+        date = sql.get_last_date_modify('lead')
     except Exception as e:
         print(e)
         date = '2022-12-01T00:00:00+03:00'
@@ -47,7 +47,7 @@ def get_lead_list():
 
 def get_deal_list():
     try:
-        date = sql.get_last_date_modify('deal')[0]
+        date = sql.get_last_date_modify('deal')
     except Exception as e:
         print(e)
         date = '2022-12-01T00:00:00+03:00'
@@ -61,7 +61,7 @@ def get_deal_list():
     })
     return deals
 
-def send_deal_to_ydb(tabName: str,entity:list):
+def send_entity_to_ydb(tabName: str,entity:list):
     for ent in tqdm(entity):
         sql.replace_query(tabName, ent)
 
@@ -69,21 +69,20 @@ def handler(event, context):
     #fields = get_deal_fields()
     #sql.create_table('deal', fields)
     deals = get_deal_list()
-    send_deal_to_ydb('deal', deals)
+    send_entity_to_ydb('deal', deals)
 
     # fields = get_lead_fields()
     # sql.create_table('lead', fields)
     leads = get_lead_list()
-    send_deal_to_ydb('lead', leads)
+    send_entity_to_ydb('lead', leads)
     
     # fields = get_user_fields()
     # sql.create_table('user', fields)
     users = get_user_list()
-    send_deal_to_ydb('user', users)
+    send_entity_to_ydb('user', users)
     
     return {
         'statusCode': 200,
         'body': 'OK'
     }
 
-handler(1,1)
